@@ -14,7 +14,7 @@ import org.junit.Test;
  * @See https://groups.google.com/forum/?hl=fr&fromgroups=#!topic/elasticsearch/2nHYMryvOcE
  * @author David Pilato (aka dadoonet)
  */
-public class ES1Test extends TestNodeHelper {
+public class ES001BoolQueryWithMustTest extends TestNodeHelper {
 	protected final ESLogger logger = ESLoggerFactory.getLogger(this.getClass().getName());
 
 	/**
