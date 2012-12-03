@@ -111,8 +111,8 @@
 # Note, that for development on a local machine, with small indices, it usually
 # makes sense to "disable" the distributed features:
 #
-# index.number_of_shards: 1
-# index.number_of_replicas: 0
+ index.number_of_shards: 1
+ index.number_of_replicas: 0
 
 # These settings directly affect the performance of index and search operations
 # in your cluster. Assuming you have enough machines to hold shards and
@@ -135,6 +135,8 @@
 # Use the Index Status API (<http://localhost:9200/A/_status>) to inspect
 # the index status.
 
+# We store all docs in memory
+ index.store.type: memory
 
 #################################### Paths ####################################
 
@@ -243,6 +245,7 @@
 # The default gateway type is the "local" gateway (recommended):
 #
 # gateway.type: local
+ gateway.type: none
 
 # Settings below control how and when to start the initial recovery process on
 # a full cluster restart (to reuse as much local data as possible when using shared
