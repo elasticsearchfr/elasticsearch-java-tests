@@ -92,6 +92,8 @@
 			<version>${elasticsearch.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- TODO When the plugin will be released, we will uncomment this -->
+		<!--
 		<dependency>
 			<groupId>de.spinscale</groupId>
 			<artifactId>elasticsearch-plugin-suggest</artifactId>
@@ -99,6 +101,7 @@
 			<scope>test</scope>
 			<optional>true</optional>
 		</dependency>
+		-->
 	</dependencies>
 
 	<repositories>
