@@ -21,6 +21,7 @@ public class ES002GetMappingTest extends TestNodeHelper {
 	@Test
 	public void getMapping() throws Exception {
 		node.client().prepareIndex("es002index", "type1").setSource("{\"email\" : \"abc@otherdomain.com\", \"firstname\" : \"abc\"}").execute().actionGet();
+		node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 		node.client().admin().indices().prepareRefresh().execute().actionGet();
 
 		MappingMetaData md = node.client().admin().cluster().prepareState().execute().actionGet().state().metaData().index("es002index").mapping("type1");
