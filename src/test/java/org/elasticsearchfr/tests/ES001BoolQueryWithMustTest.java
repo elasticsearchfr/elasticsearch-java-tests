@@ -22,9 +22,9 @@ public class ES001BoolQueryWithMustTest extends TestNodeHelper {
 	 */
 	@Test
 	public void createSuggest() throws Exception {
-		node.client().prepareIndex("es1index", "type1").setSource("{\"email\" : \"abc@otherdomain.com\", \"firstname\" : \"abc\"}").execute().actionGet();
-		node.client().prepareIndex("es1index", "type1").setSource("{\"email\" : \"abc@gmail.com\", \"firstname\" : \"abc\"}").execute().actionGet();
-		node.client().prepareIndex("es1index", "type1").setSource("{\"email\" : \"xyz@gmail.com\", \"firstname\" : \"xyz\"}").execute().actionGet();
+		node.client().prepareIndex("es001index", "type1").setSource("{\"email\" : \"abc@otherdomain.com\", \"firstname\" : \"abc\"}").execute().actionGet();
+		node.client().prepareIndex("es001index", "type1").setSource("{\"email\" : \"abc@gmail.com\", \"firstname\" : \"abc\"}").execute().actionGet();
+		node.client().prepareIndex("es001index", "type1").setSource("{\"email\" : \"xyz@gmail.com\", \"firstname\" : \"xyz\"}").execute().actionGet();
 		
 		node.client().admin().indices().prepareRefresh().execute().actionGet();
 
