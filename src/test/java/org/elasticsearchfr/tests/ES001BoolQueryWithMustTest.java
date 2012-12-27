@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * Testing bool queries with must clauses
- * @See https://groups.google.com/forum/?hl=fr&fromgroups=#!topic/elasticsearch/2nHYMryvOcE
+ * See discussion on <a href="https://groups.google.com/d/topic/elasticsearch/2nHYMryvOcE/discussion">Elasticsearch Mailing List</a>
  * @author David Pilato (aka dadoonet)
  */
 public class ES001BoolQueryWithMustTest extends TestNodeHelper {

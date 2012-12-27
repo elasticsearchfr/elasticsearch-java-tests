@@ -9,7 +9,7 @@ import org.junit.Test;
 
 /**
  * Testing Get Mapping in Java
- * @See https://groups.google.com/forum/?hl=fr&fromgroups=#!topic/elasticsearch/IDZQKxgzR3s
+ * See discussion on <a href="https://groups.google.com/d/topic/elasticsearch/IDZQKxgzR3s/discussion">Elasticsearch Mailing List</a>
  * @author David Pilato (aka dadoonet)
  */
 public class ES002GetMappingTest extends TestNodeHelper {
