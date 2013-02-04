@@ -18,7 +18,8 @@
 	</licenses>
 
 	<properties>
-		<elasticsearch.version>0.20.1</elasticsearch.version>
+		<elasticsearch.version>0.20.4</elasticsearch.version>
+        <jackson.version>2.1.0</jackson.version>
 	</properties>
 
 	<developers>
@@ -92,7 +93,31 @@
 			<version>${elasticsearch.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- TODO When the plugin will be released, we will uncomment this -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>test</scope>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.spatial4j</groupId>
+            <artifactId>spatial4j</artifactId>
+            <version>0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>1.12</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- TODO When the plugin will be released, we will uncomment this -->
 		<!--
 		<dependency>
 			<groupId>de.spinscale</groupId>
