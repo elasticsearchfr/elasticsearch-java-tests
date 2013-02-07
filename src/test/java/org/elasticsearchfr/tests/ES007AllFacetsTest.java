@@ -39,8 +39,8 @@ import org.elasticsearchfr.tests.helper.TestNodeHelper;
 import org.junit.*;
 
 /**
- * We want to have an example for all existing query listed on
- * <a href="http://www.elasticsearch.org/guide/reference/query-dsl/">Query DSL documentation</a>
+ * We want to have an example for all existing facet listed on
+ * <a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">Facets documentation</a>
  * @author David Pilato (aka dadoonet)
  */
 public class ES007AllFacetsTest extends TestNodeHelper {
