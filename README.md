@@ -9,6 +9,7 @@ Build Status
 
 Thanks to cloudbees for the [build status](https://buildhive.cloudbees.com): [![Build Status](https://buildhive.cloudbees.com/job/elasticsearchfr/job/elasticsearch-java-tests/badge/icon)](https://buildhive.cloudbees.com/job/elasticsearchfr/job/elasticsearch-java-tests/)
 
+[![Test trends](https://buildhive.cloudbees.com/job/elasticsearchfr/job/elasticsearch-java-tests/test/trend)](https://buildhive.cloudbees.com/job/elasticsearchfr/job/elasticsearch-java-tests/)
 
 How to use it
 =============
