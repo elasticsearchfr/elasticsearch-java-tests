@@ -1,6 +1,7 @@
 package org.elasticsearchfr.tests.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Beer implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -9,6 +10,7 @@ public class Beer implements Serializable {
 	private Colour colour;
 	private double size;
 	private double price;
+    private Date date;
 
 	public Beer() {
 	}
@@ -19,11 +21,12 @@ public class Beer implements Serializable {
 	 * @param size
 	 * @param price
 	 */
-	public Beer(String brand, Colour colour, double size, double price) {
+	public Beer(String brand, Colour colour, double size, double price, Date date) {
 		this.brand = brand;
 		this.colour = colour;
 		this.size = size;
 		this.price = price;
+        this.date = date;
 	}
 
 	/**
@@ -86,7 +89,15 @@ public class Beer implements Serializable {
 		this.price = price;
 	}
 
-	@Override
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    @Override
 	public boolean equals(Object obj) {
 
 		if (obj == null) return false;
@@ -99,7 +110,8 @@ public class Beer implements Serializable {
 		if (this.colour != beer.colour) return false;
 		if (this.size != beer.size ) return false;
 		if (this.price != beer.price) return false;
+        if (this.date != beer.date && this.date != null && !this.date.equals(beer.date)) return false;
 
-		return true;
+        return true;
 	}
 }

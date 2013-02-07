@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spatial4j.core.context.SpatialContext;
 import com.spatial4j.core.shape.impl.PointImpl;
 import com.spatial4j.core.shape.impl.RectangleImpl;
+import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -44,6 +44,14 @@ public class ES005AllQueriesTest extends TestNodeHelper {
     public void setUp() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
+        try {
+            // Let's delete old index if any
+            node.client().admin().indices().prepareDelete("meal").execute().actionGet();
+            node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+        } catch (ElasticSearchException e) {
+
+        }
+
         BulkRequestBuilder brb = node.client().prepareBulk();
 
         for (int i = 0; i < 1000; i++) {
@@ -65,15 +73,13 @@ public class ES005AllQueriesTest extends TestNodeHelper {
      */
     @After
     public void tearDown() {
-        BulkRequestBuilder brb = node.client().prepareBulk();
+        try {
+            // Let's delete old index if any
+            node.client().admin().indices().prepareDelete("meal").execute().actionGet();
+            node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+        } catch (ElasticSearchException e) {
 
-        for (int i = 0; i < 1000; i++) {
-            DeleteRequest dr = new DeleteRequest("meal", "beer", "beer_" + i);
-            brb.add(dr);
         }
-
-        BulkResponse br = brb.execute().actionGet();
-        Assert.assertFalse(br.hasFailures());
     }
 
     /**
@@ -90,7 +96,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch()
+        SearchResponse sr = node.client().prepareSearch("meal")
                 .setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
@@ -114,7 +120,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch()
+        SearchResponse sr = node.client().prepareSearch("meal")
                 .setQuery(qb)
                 .execute().actionGet();
 
@@ -139,7 +145,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch()
+        SearchResponse sr = node.client().prepareSearch("meal")
                 .setQuery(qb)
                 .execute().actionGet();
 
@@ -166,7 +172,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch()
+        SearchResponse sr = node.client().prepareSearch("meal")
                 .setQuery(qb).execute()
                 .actionGet();
 
@@ -192,7 +198,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch()
+        SearchResponse sr = node.client().prepareSearch("meal")
                 .setQuery(qb)
                 .execute().actionGet();
 
@@ -229,7 +235,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch().setQuery(qb)
+        SearchResponse sr = node.client().prepareSearch("meal").setQuery(qb)
                 .execute().actionGet();
 
         Assert.assertNotNull(sr);
@@ -271,7 +277,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch().setQuery(qb)
+        SearchResponse sr = node.client().prepareSearch("meal").setQuery(qb)
                 .execute().actionGet();
 
         Assert.assertNotNull(sr);
@@ -305,7 +311,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch().setQuery(qb)
+        SearchResponse sr = node.client().prepareSearch("meal").setQuery(qb)
                 .setSize(100)
                 .execute().actionGet();
 
@@ -348,7 +354,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         logger.info("Your query is : {}", qb);
 
-        SearchResponse sr = node.client().prepareSearch().setQuery(qb)
+        SearchResponse sr = node.client().prepareSearch("meal").setQuery(qb)
                 .setSize(100)
                 .addHighlightedField("brand")
                 .addHighlightedField("colour")
@@ -387,9 +393,9 @@ public class ES005AllQueriesTest extends TestNodeHelper {
      */
     @Test
     public void multi_Search() throws Exception {
-        SearchRequestBuilder srb1 = node.client().prepareSearch().setQuery(QueryBuilders.queryString("pale")).setSize(1);
+        SearchRequestBuilder srb1 = node.client().prepareSearch("meal").setQuery(QueryBuilders.queryString("pale")).setSize(1);
         logger.info("Your 1st query is : {}", srb1);
-        SearchRequestBuilder srb2 = node.client().prepareSearch().setQuery(QueryBuilders.matchQuery("brand", "HEINEKEN")).setSize(1);
+        SearchRequestBuilder srb2 = node.client().prepareSearch("meal").setQuery(QueryBuilders.matchQuery("brand", "HEINEKEN")).setSize(1);
         logger.info("Your 2nd query is : {}", srb2);
 
         MultiSearchResponse sr = node.client().prepareMultiSearch()
@@ -429,7 +435,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -455,7 +461,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -484,7 +490,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -510,7 +516,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -540,7 +546,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -566,7 +572,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -593,7 +599,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -623,7 +629,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -649,7 +655,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -677,7 +683,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -705,7 +711,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -733,7 +739,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
         // TODO Create a test here
         // Execute the query
         /*SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -761,7 +767,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
         // TODO Create a test here
         // Execute the query
         /*SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -790,7 +796,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -819,7 +825,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -845,7 +851,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -874,7 +880,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -906,7 +912,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -934,7 +940,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -963,7 +969,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -989,7 +995,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1017,7 +1023,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1049,7 +1055,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
         // Execute the query
         /*
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1076,7 +1082,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1109,7 +1115,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
         /*
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1140,7 +1146,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1171,7 +1177,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1202,7 +1208,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1232,7 +1238,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
 
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
@@ -1270,7 +1276,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
         /*
         // Execute the query
         SearchResponse sr = null;
-        sr = node.client().prepareSearch().setQuery(qb).execute().actionGet();
+        sr = node.client().prepareSearch("meal").setQuery(qb).execute().actionGet();
 
         Assert.assertNotNull(sr);
         Assert.assertNotNull(sr.getHits());
