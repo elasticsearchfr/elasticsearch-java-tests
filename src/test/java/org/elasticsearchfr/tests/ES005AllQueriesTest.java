@@ -404,11 +404,11 @@ public class ES005AllQueriesTest extends TestNodeHelper {
                 .execute().actionGet();
 
         Assert.assertNotNull(sr);
-        Assert.assertEquals(2, sr.responses().length);
+        Assert.assertEquals(2, sr.getResponses().length);
         long nbHits = 0;
-        for (MultiSearchResponse.Item item : sr.responses()) {
-            SearchResponse response = item.response();
-            nbHits += response.hits().totalHits();
+        for (MultiSearchResponse.Item item : sr.getResponses()) {
+            SearchResponse response = item.getResponse();
+            nbHits += response.getHits().totalHits();
         }
 
         Assert.assertTrue(nbHits > 0);
@@ -675,7 +675,7 @@ public class ES005AllQueriesTest extends TestNodeHelper {
     public void fuzzyLikeThisSearch() throws Exception {
         QueryBuilder qb = null;
         // create the query
-        qb = QueryBuilders.fuzzyLikeThisQuery("brand", "color")
+        qb = QueryBuilders.fuzzyLikeThisQuery("brand", "colour")
                 .likeText("heineken is a pale beer")
                 .maxQueryTerms(12);
 

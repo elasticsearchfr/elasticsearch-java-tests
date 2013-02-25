@@ -12,7 +12,7 @@ import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.facet.AbstractFacetBuilder;
+import org.elasticsearch.search.facet.FacetBuilder;
 import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
@@ -336,12 +336,12 @@ public class ES007AllFacetsTest extends TestNodeHelper {
         logger.info("Full response is : {}", sr);
 
         Assert.assertNotNull(sr);
-        Assert.assertNotNull(sr.facets());
-        Assert.assertNotNull(sr.facets().facetsAsMap().get("f"));
-        Assert.assertEquals("f", sr.facets().facetsAsMap().get("f").getName());
+        Assert.assertNotNull(sr.getFacets());
+        Assert.assertNotNull(sr.getFacets().facetsAsMap().get("f"));
+        Assert.assertEquals("f", sr.getFacets().facetsAsMap().get("f").getName());
 
 
-        TermsFacet f = (TermsFacet) sr.facets().facetsAsMap().get("f");
+        TermsFacet f = (TermsFacet) sr.getFacets().facetsAsMap().get("f");
 
         f.getTotalCount();      // Total terms doc count
         f.getOtherCount();      // Not shown terms doc count
@@ -355,7 +355,7 @@ public class ES007AllFacetsTest extends TestNodeHelper {
 
     }
 
-    private Facet launchSearch(AbstractFacetBuilder facet, String facetName) {
+    private Facet launchSearch(FacetBuilder facet, String facetName) {
         SearchResponse sr = node.client().prepareSearch()
                 .setQuery(QueryBuilders.matchAllQuery())
                 .addFacet(facet)
@@ -364,11 +364,11 @@ public class ES007AllFacetsTest extends TestNodeHelper {
         logger.info("Full response is : {}", sr);
 
         Assert.assertNotNull(sr);
-        Assert.assertNotNull(sr.facets());
-        Assert.assertNotNull(sr.facets().facetsAsMap().get(facetName));
-        Assert.assertEquals(facetName, sr.facets().facetsAsMap().get(facetName).getName());
+        Assert.assertNotNull(sr.getFacets());
+        Assert.assertNotNull(sr.getFacets().facetsAsMap().get(facetName));
+        Assert.assertEquals(facetName, sr.getFacets().facetsAsMap().get(facetName).getName());
 
-        return sr.facets().facetsAsMap().get(facetName);
+        return sr.getFacets().facetsAsMap().get(facetName);
     }
 
 

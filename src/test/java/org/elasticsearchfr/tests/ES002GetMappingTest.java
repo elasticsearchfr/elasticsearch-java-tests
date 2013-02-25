@@ -24,7 +24,7 @@ public class ES002GetMappingTest extends TestNodeHelper {
 		node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 		node.client().admin().indices().prepareRefresh().execute().actionGet();
 
-		MappingMetaData md = node.client().admin().cluster().prepareState().execute().actionGet().state().metaData().index("es002index").mapping("type1");
+		MappingMetaData md = node.client().admin().cluster().prepareState().execute().actionGet().getState().metaData().index("es002index").mapping("type1");
 
 		Assert.assertNotNull(md);
 		Assert.assertNotNull(md.source());

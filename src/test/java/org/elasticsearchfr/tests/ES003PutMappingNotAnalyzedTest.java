@@ -35,7 +35,7 @@ public class ES003PutMappingNotAnalyzedTest extends TestNodeHelper {
             .setType("type1")
             .setSource(xbMapping)
             .execute().actionGet();
-        if (!response.acknowledged()) {
+        if (!response.isAcknowledged()) {
             throw new Exception("Could not define mapping.");
         }
         node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();

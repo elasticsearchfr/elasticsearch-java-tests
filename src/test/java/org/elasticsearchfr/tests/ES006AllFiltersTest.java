@@ -9,6 +9,7 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.geo.GeoDistance;
 import org.elasticsearch.common.geo.ShapeRelation;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.ESLoggerFactory;
@@ -16,7 +17,6 @@ import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.search.geo.GeoDistance;
 import org.elasticsearchfr.tests.bean.Beer;
 import org.elasticsearchfr.tests.bean.BeerHelper;
 import org.elasticsearchfr.tests.helper.TestNodeHelper;
@@ -493,7 +493,7 @@ public class ES006AllFiltersTest extends TestNodeHelper {
         logger.info("Full response is : {}", sr);
 
         Assert.assertNotNull(sr);
-        Assert.assertNotNull(sr.hits());
+        Assert.assertNotNull(sr.getHits());
 
         return sr;
     }
